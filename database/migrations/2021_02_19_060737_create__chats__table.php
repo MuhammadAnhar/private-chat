@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSessionTable extends Migration
+class CreateChatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateSessionTable extends Migration
      */
     public function up()
     {
-        Schema::create('session', function (Blueprint $table) {
+        Schema::create('chats', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user1_id');
-            $table->unsignedInteger('user2_id');
-            $table->unique(['user1_id', 'user2_id']);
+            $table->unsignedInteger('message_id');
+            $table->unsignedInteger('session_id');
+            $table->unsignedInteger('user_id');
+            $table->boolean('type');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateSessionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('session');
+        Schema::dropIfExists('chats');
     }
 }
