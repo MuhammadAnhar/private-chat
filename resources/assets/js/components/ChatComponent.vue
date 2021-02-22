@@ -7,9 +7,13 @@
                         Private Chat App
                     </div>
                     <ul class="list-group">
-                        <a href="" @click.prevent="openChat(friend)" :key="friend.id" v-for="friend in friends">
-                            <li class="list-group-item">{{ friend.name }}</li>
-                        </a>
+                        <li class="list-group-item" 
+                        @click.prevent="openChat(friend)" 
+                        :key="friend.id" 
+                        v-for="friend in friends">
+                            <a href="">{{ friend.name }}</a>
+                            <i class="fas fa-circle float-right text-success" v-if="friend.online" aria-hidden="true"></i>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -42,7 +46,7 @@
                 friend.session.open = false
             },
             getFriends () {
-                axios.post('/getFriends').then(res => this.friends = res.data.data)
+                axios.post(`/getFriends`).then(res => this.friends = res.data.data)
             },
             openChat (friend) {
                 if (friend.session) {
@@ -63,7 +67,27 @@
         },
 
         created () {
-            this.getFriends()
+            this.getFriends();
+            Echo.channel("Chat").listen("SessionEvent", e => {
+                let friend = this.friends.find(friend => friend.id == e.session_by);
+                friend.session = e.session;
+            });
+            Echo.join('Chat')
+            .here((users) => {
+                this.friends.forEach(friend => {
+                    users.forEach(user => {
+                        if (user.id == friend.id) {
+                            friend.online = true
+                        }
+                    })
+                })
+            })
+            .joining((user) => {
+                this.friends.forEach(friend => user.id == friend.id ? friend.online = true : '')
+            })
+            .leaving((user) => {
+                this.friends.forEach(friend => user.id == friend.id ? friend.online = false : '')
+            })
         },
 
         components: {MessageComponent},
