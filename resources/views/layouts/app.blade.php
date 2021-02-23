@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
-        window.authId = {!!auth()->id()!!}
+        window.auth = {!!auth()->user()!!}
     </script>
 
     <!-- CSRF Token -->
