@@ -27,4 +27,18 @@ class Session extends Model
     {
         $this->messages()->delete();
     }
+
+    public function blockChats()
+    {
+        $this->block = true;
+        $this->blocked_by = auth()->id();
+        $this->save();
+    }
+
+    public function unblockChats()
+    {
+        $this->block = false;
+        $this->blocked_by = null;
+        $this->save();
+    }
 }
